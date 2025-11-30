@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 function App() {
@@ -45,7 +45,7 @@ function App() {
   };
 
   //Handle keyboard
-  const handleKeyDown = (e) => {
+  const handleKeyDown = useCallback((e) => {
     if (e.key === "ArrowLeft") {
       showPrevious();
     } else if (e.key === 'ArrowRight') {
@@ -53,7 +53,7 @@ function App() {
     } else if (e.key === 'Escape') {
       closeLightbox();
     }
-  };
+  }, []);
 
   // Listen for keyboard events
   useEffect(() => {
@@ -63,7 +63,7 @@ function App() {
         window.removeEventListener('keydown', handleKeyDown);
       };
     }
-  }, [isLightboxOpen]);
+  }, [isLightboxOpen, handleKeyDown]);
 
   return (
     <div className="App">
