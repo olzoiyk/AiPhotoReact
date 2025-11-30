@@ -53,7 +53,7 @@ function App() {
     } else if (e.key === 'Escape') {
       closeLightbox();
     }
-  }, []);
+  }, [showPrevious, showNext, closeLightbox]);
 
   // Listen for keyboard events
   useEffect(() => {
