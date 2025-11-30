@@ -15,7 +15,6 @@ function App() {
     { id: 8, src: '/img/photo8.jpg', alt: 'Photo 8' },
     { id: 9, src: '/img/photo9.jpg', alt: 'Photo 9' },
   ];
-
   // State for lightbox
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -45,20 +44,26 @@ function App() {
     );
   };
 
+  //Handle keyboard
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowLeft") {
+      showPrevious();
+    } else if (e.key === 'ArrowRight') {
+      showNext();
+    } else if (e.key === 'Escape') {
+      closeLightbox();
+    }
+  };
+
   // Listen for keyboard events
   useEffect(() => {
-    if (!isLightboxOpen) return;
-
-    const onKeyDown = (e) => {
-      if (e.key === "ArrowLeft") showPrevious();
-      if (e.key === "ArrowRight") showNext();
-      if (e.key === "Escape") closeLightbox();
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-
-  }, [isLightboxOpen]); // showNext / showPrevious are stable so no warning
+    if (isLightboxOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [isLightboxOpen]);
 
   return (
     <div className="App">
@@ -78,11 +83,11 @@ function App() {
       <section id="hero">
         <div className="hero-content">
           <h2>Capturing Life's Beautiful Moments</h2>
-          <p>Professional Photography Services</p>
+          <p>Professional Photograpy Services</p>
         </div>
       </section>
 
-      {/* Gallery Section */}
+      {/*Gallery Section*/}
       <section id="gallery">
         <h2>My Work</h2>
         <div className="gallery-grid">
@@ -98,16 +103,13 @@ function App() {
         </div>
       </section>
 
-      {/* About Section */}
+      {/*About Section*/}
       <section id="about">
         <h2>About Me</h2>
-        <p>
-          Hi, I'm Aidyn, a professional photographer specializing in family photos,
-          weddings, portraits, nature, and architecture.
-        </p>
+        <p>Hi, I'm Aidyn, a professional photographer specializing in family photos, weddings, portrait, nature and architecture</p>
       </section>
 
-      {/* Contact Section */}
+      {/*Contact Section */}
       <section id="contact">
         <h2>Get in Touch</h2>
         <p>Email: aidyn@photo.com</p>
@@ -121,31 +123,21 @@ function App() {
 
       {/* Lightbox */}
       {isLightboxOpen && (
-        <div className="lightbox active" onClick={closeLightbox}>
+        <div
+          className="lightbox active"
+          onClick={closeLightbox}
+          onKeyDown={handleKeyDown}
+          tabIndex="0"
+        >
           <span className="close" onClick={closeLightbox}>
             &times;
           </span>
-
-          <span
-            className="prev"
-            onClick={(e) => {
-              e.stopPropagation();
-              showPrevious();
-            }}
-          >
+          <span className="prev" onClick={(e) => { e.stopPropagation(); showPrevious(); }}>
             &#10094;
           </span>
-
-          <span
-            className="next"
-            onClick={(e) => {
-              e.stopPropagation();
-              showNext();
-            }}
-          >
-            &#10095;
+          <span className="next" onClick={(e) => { e.stopPropagation(); showNext(); }}>
+            &10095;
           </span>
-
           <img
             src={images[currentIndex].src}
             alt={images[currentIndex].alt}
