@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-
   // Array of image data
   const images = [
     { id: 1, src: '/img/photo1.jpg', alt: 'Photo 1' },
@@ -15,6 +14,7 @@ function App() {
     { id: 8, src: '/img/photo8.jpg', alt: 'Photo 8' },
     { id: 9, src: '/img/photo9.jpg', alt: 'Photo 9' },
   ];
+
   // State for lightbox
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,26 +44,29 @@ function App() {
     );
   };
 
-  //Handle keyboard
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === "ArrowLeft") {
-      showPrevious();
-    } else if (e.key === 'ArrowRight') {
-      showNext();
-    } else if (e.key === 'Escape') {
-      closeLightbox();
-    }
-  }, [showPrevious, showNext, closeLightbox]);
-
   // Listen for keyboard events
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        setCurrentIndex((prevIndex) =>
+          prevIndex === 0 ? images.length - 1 : prevIndex - 1
+        );
+      } else if (e.key === 'ArrowRight') {
+        setCurrentIndex((prevIndex) =>
+          prevIndex === images.length - 1 ? 0 : prevIndex + 1
+        );
+      } else if (e.key === 'Escape') {
+        setIsLightboxOpen(false);
+      }
+    };
+
     if (isLightboxOpen) {
       window.addEventListener('keydown', handleKeyDown);
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
     }
-  }, [isLightboxOpen, handleKeyDown]);
+  }, [isLightboxOpen, images.length]);
 
   return (
     <div className="App">
@@ -83,11 +86,11 @@ function App() {
       <section id="hero">
         <div className="hero-content">
           <h2>Capturing Life's Beautiful Moments</h2>
-          <p>Professional Photograpy Services</p>
+          <p>Professional Photography Services</p>
         </div>
       </section>
 
-      {/*Gallery Section*/}
+      {/* Gallery Section */}
       <section id="gallery">
         <h2>My Work</h2>
         <div className="gallery-grid">
@@ -103,13 +106,13 @@ function App() {
         </div>
       </section>
 
-      {/*About Section*/}
+      {/* About Section */}
       <section id="about">
         <h2>About Me</h2>
         <p>Hi, I'm Aidyn, a professional photographer specializing in family photos, weddings, portrait, nature and architecture</p>
       </section>
 
-      {/*Contact Section */}
+      {/* Contact Section */}
       <section id="contact">
         <h2>Get in Touch</h2>
         <p>Email: aidyn@photo.com</p>
@@ -126,8 +129,6 @@ function App() {
         <div
           className="lightbox active"
           onClick={closeLightbox}
-          onKeyDown={handleKeyDown}
-          tabIndex="0"
         >
           <span className="close" onClick={closeLightbox}>
             &times;
@@ -136,7 +137,7 @@ function App() {
             &#10094;
           </span>
           <span className="next" onClick={(e) => { e.stopPropagation(); showNext(); }}>
-            &10095;
+            &#10095;
           </span>
           <img
             src={images[currentIndex].src}
